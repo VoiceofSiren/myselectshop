@@ -5,9 +5,14 @@ import com.sparta.myselectshop.dto.ProductRequestDto;
 import com.sparta.myselectshop.dto.ProductResponseDto;
 import com.sparta.myselectshop.entity.Product;
 import com.sparta.myselectshop.entity.User;
+import com.sparta.myselectshop.entity.UserRoleEnum;
 import com.sparta.myselectshop.naver.dto.ItemDto;
 import com.sparta.myselectshop.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,11 +50,25 @@ public class ProductService {
         return new ProductResponseDto(product);
     }
 
-    public List<ProductResponseDto> getProducts(User user) {
-        return productRepository.findAllByUser(user)
-                .stream()
-                .map(ProductResponseDto::new)
-                .collect(Collectors.toList());
+    public Page<ProductResponseDto> getProducts(User user, int page, int size, String sortBy, boolean isAsc) {
+
+        Sort.Direction direction = isAsc? Sort.Direction.ASC: Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        // Admin 권한 검사
+        UserRoleEnum userRoleEnum = user.getRole();
+
+        Page<Product> productPage;
+
+        if (userRoleEnum == UserRoleEnum.USER) {
+            productPage = productRepository.findAllByUser(user, pageable);
+        } else {
+            productPage = productRepository.findAll(pageable);
+        }
+
+        return productPage
+                .map(ProductResponseDto::new);
     }
 
     @Transactional
@@ -61,11 +80,4 @@ public class ProductService {
         product.updateByItemDto(itemDto);
     }
 
-    // Admin 계정으로 상품 목록 조회
-    public List<ProductResponseDto> getAllProducts() {
-        return productRepository.findAll()
-                .stream()
-                .map(ProductResponseDto::new)
-                .collect(Collectors.toList());
-    }
 }
