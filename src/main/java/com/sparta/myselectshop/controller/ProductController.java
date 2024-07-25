@@ -40,8 +40,7 @@ public class ProductController {
                                                 @RequestParam(name = "page") int page,
                                                 @RequestParam(name = "size") int size,
                                                 @RequestParam(name = "sortBy") String sortBy,
-                                                @RequestParam(name = "isAsc") boolean isAsc
-                                                ) {
+                                                @RequestParam(name = "isAsc") boolean isAsc) {
         return productService.getProducts(userDetails.getUser(),
                                           page - 1,
                                           size,
@@ -56,5 +55,22 @@ public class ProductController {
                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         productService.addFolder(productId, folderId, userDetails.getUser());
     }
+
+    @GetMapping("/folders/{folderId}/products")
+    public Page<ProductResponseDto> getProductsInFolders(@PathVariable Long folderId,
+                                                         @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                         // page: 클라이언트에서는 1, 서버에서는 0부터 시작
+                                                         @RequestParam(name = "page") int page,
+                                                         @RequestParam(name = "size") int size,
+                                                         @RequestParam(name = "sortBy") String sortBy,
+                                                         @RequestParam(name = "isAsc") boolean isAsc) {
+        return productService.getProductsInFolder(folderId,
+                                                  page - 1,
+                                                  size,
+                                                  sortBy,
+                                                  isAsc,
+                                                  userDetails.getUser());
+    }
+
 
 }
