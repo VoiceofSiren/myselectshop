@@ -10,8 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -20,9 +18,8 @@ public class ProductController {
     private final ProductService productService;
 
     // 관심 상품 등록
-    @PostMapping("products")
-    public ProductResponseDto createProduct(@RequestBody ProductRequestDto requestDto,
-                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    @PostMapping("/products")
+    public ProductResponseDto createProduct(@RequestBody ProductRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return productService.createProduct(requestDto, userDetails.getUser());
     }
 
