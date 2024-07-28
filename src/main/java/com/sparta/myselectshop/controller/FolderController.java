@@ -2,12 +2,9 @@ package com.sparta.myselectshop.controller;
 
 import com.sparta.myselectshop.dto.FolderRequestDto;
 import com.sparta.myselectshop.dto.FolderResponseDto;
-import com.sparta.myselectshop.exception.RestApiException;
 import com.sparta.myselectshop.security.UserDetailsImpl;
 import com.sparta.myselectshop.service.FolderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +31,7 @@ public class FolderController {
     }
 
     // 이 Controller에서 IllegalArgumentException이 발생했을 때 중간에 가로채어 핸들링해주는 AOP 기능
+    /*
     @ExceptionHandler({IllegalArgumentException.class})
     public ResponseEntity<RestApiException> handleException(IllegalArgumentException ex) {
         System.out.println("FolderController.handleException");
@@ -45,4 +43,5 @@ public class FolderController {
                 HttpStatus.BAD_REQUEST
         );
     }
+    */
 }
